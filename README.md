@@ -1,3 +1,4 @@
+这个版本不跟官方的版本 同步 
 # RocketMQ-Spring
 
 [![Build Status](https://travis-ci.org/apache/rocketmq-spring.svg?branch=master)](https://travis-ci.org/apache/rocketmq-spring)
