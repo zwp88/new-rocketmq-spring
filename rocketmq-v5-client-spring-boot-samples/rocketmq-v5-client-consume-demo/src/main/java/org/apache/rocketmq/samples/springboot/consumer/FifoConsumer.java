@@ -22,6 +22,8 @@ import org.apache.rocketmq.client.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.client.core.RocketMQListener;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+
 @Service
 @RocketMQMessageListener(endpoints = "${demo.fifo.rocketmq.endpoints:}", topic = "${demo.fifo.rocketmq.topic:}",
         consumerGroup = "${demo.fifo.rocketmq.consumer-group:}", tag = "${demo.fifo.rocketmq.tag:}")
@@ -30,6 +32,8 @@ public class FifoConsumer implements RocketMQListener {
     @Override
     public ConsumeResult consume(MessageView messageView) {
         System.out.println("handle my fifo message:" + messageView);
+        String body =  StandardCharsets.UTF_8.decode(messageView.getBody().duplicate()).toString();
+        System.out.println("Sir，我正在消费消息：" + body);
         return ConsumeResult.SUCCESS;
     }
 }

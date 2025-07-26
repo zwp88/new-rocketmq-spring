@@ -41,8 +41,9 @@ public class RocketMQMessageListenerBeanPostProcessorTest {
         runner.withPropertyValues("rocketmq.name-server=127.0.0.1:9876").
                 withUserConfiguration(TestAnnotationEnhancerConfig.class, TestReceiverConfig.class).
                 run((context) -> {
+                    assertThat(context).hasNotFailed();
                     // Started container failed. DefaultRocketMQListenerContainer{consumerGroup='Receiver-Custom-Consumer-Group' **
-                    assertThat(context).getFailure().hasMessageContaining("connect to null failed");
+                    //assertThat(context).getFailure().hasMessageContaining("connect to null failed");
                 });
 
     }

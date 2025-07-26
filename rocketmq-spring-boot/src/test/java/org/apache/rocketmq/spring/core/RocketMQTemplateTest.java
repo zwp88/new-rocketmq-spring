@@ -72,7 +72,7 @@ public class RocketMQTemplateTest {
         try {
             rocketMQTemplate.syncSend(topic, "payload");
         } catch (MessagingException e) {
-            assertThat(e).hasMessageContaining("org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to null failed");
+            assertThat(e).hasStackTraceContaining("org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to null failed");
         }
 
         try {
@@ -86,19 +86,19 @@ public class RocketMQTemplateTest {
                 }
             });
         } catch (MessagingException e) {
-            assertThat(e).hasMessageContaining("org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to [127.0.0.1:9876] failed");
+            assertThat(e).hasStackTraceContaining("org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to [127.0.0.1:9876] failed");
         }
 
         try {
             rocketMQTemplate.syncSendOrderly(topic, "payload", "hashkey");
         } catch (MessagingException e) {
-            assertThat(e).hasMessageContaining("org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to null failed");
+            assertThat(e).hasStackTraceContaining("org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to null failed");
         }
 
         try {
             rocketMQTemplate.syncSendDelayTimeSeconds(topic, "payload", 10L);
         } catch (MessagingException e) {
-            assertThat(e).hasMessageContaining("org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to null failed");
+            assertThat(e).hasStackTraceContaining("org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to null failed");
         }
     }
     @Test

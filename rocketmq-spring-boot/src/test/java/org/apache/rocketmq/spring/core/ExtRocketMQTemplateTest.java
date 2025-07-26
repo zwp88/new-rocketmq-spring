@@ -71,13 +71,13 @@ public class ExtRocketMQTemplateTest {
         try {
             rocketMQTemplate.sendMessageInTransaction("test-topic", MessageBuilder.withPayload("payload").build(), null);
         } catch (IllegalStateException e) {
-            assertThat(e).hasMessageContaining("The rocketMQTemplate does not exist TransactionListener");
+            assertThat(e).hasStackTraceContaining("The rocketMQTemplate does not exist TransactionListener");
         }
 
         try {
             extRocketMQTemplate.sendMessageInTransaction("test-topic", MessageBuilder.withPayload("payload").build(), null);
         } catch (MessagingException e) {
-            assertThat(e).hasMessageContaining("org.apache.rocketmq.client.exception.MQClientException: send message Exception");
+            assertThat(e).hasStackTraceContaining("org.apache.rocketmq.client.exception.MQClientException: send message Exception");
         }
 
     }

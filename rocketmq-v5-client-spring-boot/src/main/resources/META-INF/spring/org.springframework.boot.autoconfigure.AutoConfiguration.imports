@@ -1,1 +1,7 @@
 org.apache.rocketmq.client.autoconfigure.RocketMQAutoConfiguration
+org.apache.rocketmq.client.autoconfigure.ExtConsumerResetConfiguration
+org.apache.rocketmq.client.autoconfigure.ExtTemplateResetConfiguration
+org.apache.rocketmq.client.autoconfigure.ListenerContainerConfiguration
+org.apache.rocketmq.client.autoconfigure.MessageConverterConfiguration
+org.apache.rocketmq.client.autoconfigure.RocketMQListenerConfiguration
+org.apache.rocketmq.client.autoconfigure.RocketMQTransactionConfiguration

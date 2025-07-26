@@ -34,27 +34,27 @@
 
     <properties>
         <project.rootdir>${project.basedir}/..</project.rootdir>
-        <spring.version>5.3.27</spring.version>
-        <spring.boot.version>2.7.18</spring.boot.version>
+        <spring.version>6.2.8</spring.version>
+        <spring.boot.version>3.5.3</spring.boot.version>
         <rocketmq.client.spring.boot.version>2.3.5-SNAPSHOT</rocketmq.client.spring.boot.version>
-        <rocketmq.version>5.1.0</rocketmq.version>
+        <rocketmq.version>5.3.2</rocketmq.version>
         <slf4j.version>1.7.25</slf4j.version>
         <jackson.version>2.16.1</jackson.version>
         <fastjson.version>1.2.83</fastjson.version>
         <junit.version>4.13.2</junit.version>
-        <rocketmq.spring.client.version>5.0.7</rocketmq.spring.client.version>
-        <java.version>1.8</java.version>
+        <rocketmq.spring.client.version>5.0.8</rocketmq.spring.client.version>
+        <java.version>17</java.version>
         <resource.delimiter>@</resource.delimiter>
         <!-- Delimiter that doesn't clash with Spring ${} placeholders -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <additionalparam>-Xdoclint:none</additionalparam>
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <!-- Exclude all generated code -->
-        <sonar.jacoco.itReportPath>${project.basedir}/../test/target/jacoco-it.exec</sonar.jacoco.itReportPath>
-        <sonar.exclusions>file:**/generated-sources/**,**/test/**</sonar.exclusions>
+<!--        <additionalparam>-Xdoclint:none</additionalparam>-->
+<!--        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>-->
+<!--        &lt;!&ndash; Exclude all generated code &ndash;&gt;-->
+<!--        <sonar.jacoco.itReportPath>${project.basedir}/../test/target/jacoco-it.exec</sonar.jacoco.itReportPath>-->
+<!--        <sonar.exclusions>file:**/generated-sources/**,**/test/**</sonar.exclusions>-->
     </properties>
 
     <dependencyManagement>
@@ -120,11 +120,23 @@
                 </exclusions>
             </dependency>
 
+
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-acl</artifactId>
                 <version>${rocketmq.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.tomcat</groupId>
+                        <artifactId>annotations-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.rocketmq</groupId>
+                        <artifactId>rocketmq-rocksdb</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
+
 
             <dependency>
                 <groupId>org.springframework</groupId>

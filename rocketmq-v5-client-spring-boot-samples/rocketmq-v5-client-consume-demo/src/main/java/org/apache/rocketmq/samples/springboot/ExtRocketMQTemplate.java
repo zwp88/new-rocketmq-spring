@@ -19,6 +19,7 @@ package org.apache.rocketmq.samples.springboot;
 import org.apache.rocketmq.client.annotation.ExtConsumerResetConfiguration;
 import org.apache.rocketmq.client.core.RocketMQClientTemplate;
 
-@ExtConsumerResetConfiguration(topic = "${ext.rocketmq.topic:}")
+@ExtConsumerResetConfiguration(filterExpressionType="tag",tag="*",endpoints = "127.0.0.1:8081", topic = "delayTopic2",consumerGroup="ext-test")
 public class ExtRocketMQTemplate extends RocketMQClientTemplate {
+
 }

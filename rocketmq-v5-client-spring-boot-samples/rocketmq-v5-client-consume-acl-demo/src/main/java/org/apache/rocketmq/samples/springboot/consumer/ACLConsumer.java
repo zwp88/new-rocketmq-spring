@@ -26,6 +26,8 @@ import org.apache.rocketmq.client.core.RocketMQPushConsumerLifecycleListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+
 @Service
 @RocketMQMessageListener(accessKey = "${demo.acl.rocketmq.access-key:}", secretKey = "${demo.acl.rocketmq.secret-key:}",
         tag = "${demo.acl.rocketmq.tag:}", topic = "${demo.acl.rocketmq.topic:}",
@@ -37,6 +39,9 @@ public class ACLConsumer implements RocketMQListener, RocketMQPushConsumerLifecy
     @Override
     public ConsumeResult consume(MessageView messageView) {
         System.out.println("handle my acl message:" + messageView);
+        String body =  StandardCharsets.UTF_8.decode(messageView.getBody().duplicate()).toString();
+        System.out.println("Sir，我正在消费消息：" + body);
+
         return ConsumeResult.SUCCESS;
     }
 

@@ -20,6 +20,8 @@ import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.apache.rocketmq.client.core.RocketMQClientTemplate;
 import org.apache.rocketmq.samples.springboot.domain.UserMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -31,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 
 @SpringBootApplication
 public class ClientProducerACLApplication implements CommandLineRunner {
+    private static final Logger log = LoggerFactory.getLogger(ClientProducerACLApplication.class);
 
     @Resource
     private RocketMQClientTemplate rocketMQClientTemplate;
@@ -51,16 +54,16 @@ public class ClientProducerACLApplication implements CommandLineRunner {
     void testSendNormalMessage() {
         SendReceipt sendReceipt = rocketMQClientTemplate.syncSendNormalMessage(normalTopic, new UserMessage()
                 .setId(1).setUserName("name").setUserAge((byte) 3));
-        System.out.printf("normalSend to topic %s sendReceipt=%s %n", normalTopic, sendReceipt);
+        log.info("normalSend to topic {} sendReceipt={} ", normalTopic, sendReceipt);
 
         sendReceipt = rocketMQClientTemplate.syncSendNormalMessage(normalTopic, "normal message");
-        System.out.printf("normalSend to topic %s sendReceipt=%s %n", normalTopic, sendReceipt);
+        log.info("normalSend to topic {} sendReceipt={} ", normalTopic, sendReceipt);
 
         sendReceipt = rocketMQClientTemplate.syncSendNormalMessage(normalTopic, "byte message".getBytes(StandardCharsets.UTF_8));
-        System.out.printf("normalSend to topic %s sendReceipt=%s %n", normalTopic, sendReceipt);
+        log.info("normalSend to topic {} sendReceipt={} ", normalTopic, sendReceipt);
 
         sendReceipt = rocketMQClientTemplate.syncSendNormalMessage(normalTopic, MessageBuilder.
                 withPayload("test message".getBytes()).build());
-        System.out.printf("normalSend to topic %s sendReceipt=%s %n", normalTopic, sendReceipt);
+        log.info("normalSend to topic {} sendReceipt={} ", normalTopic, sendReceipt);
     }
 }

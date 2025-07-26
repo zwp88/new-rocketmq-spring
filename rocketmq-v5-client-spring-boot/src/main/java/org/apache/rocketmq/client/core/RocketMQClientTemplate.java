@@ -373,7 +373,8 @@ public class RocketMQClientTemplate extends AbstractMessageSendingTemplate<Strin
     public CompletableFuture<List<MessageView>> receiveAsync(int maxMessageNum, Duration invisibleDuration) throws ClientException, IOException {
         SimpleConsumer simpleConsumer = this.getSimpleConsumer();
         CompletableFuture<List<MessageView>> listCompletableFuture = simpleConsumer.receiveAsync(maxMessageNum, invisibleDuration);
-        simpleConsumer.close();
+        //bug
+        //simpleConsumer.close();
         return listCompletableFuture;
     }
 

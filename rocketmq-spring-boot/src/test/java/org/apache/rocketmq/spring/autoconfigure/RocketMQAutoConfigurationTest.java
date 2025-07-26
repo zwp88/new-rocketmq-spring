@@ -200,6 +200,7 @@ public class RocketMQAutoConfigurationTest {
 
     }
 
+    @Test
     public void testPlaceholdersListenerContainer() {
         runner.withPropertyValues("rocketmq.name-server=127.0.0.1:9876",
             "demo.placeholders.consumer.group = abc3",
@@ -224,7 +225,7 @@ public class RocketMQAutoConfigurationTest {
         runner.withPropertyValues("rocketmq.name-server=127.0.0.1:9876").
             withUserConfiguration(TestConfig.class).
             run((context) -> {
-                assertThat(context).getFailure().hasMessageContaining("connect to null failed");
+                assertThat(context).getFailure().hasStackTraceContaining("connect to null failed");
             });
     }
 
@@ -233,7 +234,7 @@ public class RocketMQAutoConfigurationTest {
         runner.withPropertyValues("rocketmq.name-server=127.0.0.1:9876").
             withUserConfiguration(TestConfigWithRocketMQReplyListener.class).
             run((context) -> {
-                assertThat(context).getFailure().hasMessageContaining("connect to null failed");
+                assertThat(context).getFailure().hasStackTraceContaining("connect to null failed");
             });
     }
 

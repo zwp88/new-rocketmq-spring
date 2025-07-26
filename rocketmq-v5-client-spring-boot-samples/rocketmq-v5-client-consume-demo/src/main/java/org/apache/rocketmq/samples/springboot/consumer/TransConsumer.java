@@ -23,12 +23,18 @@ import org.apache.rocketmq.client.apis.message.MessageView;
 import org.apache.rocketmq.client.core.RocketMQListener;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+
 @Service
 @RocketMQMessageListener(endpoints = "${demo.trans.rocketmq.endpoints:}", topic = "${demo.trans.rocketmq.topic:}",
         consumerGroup = "${demo.trans.rocketmq.consumer-group:}", tag = "${demo.trans.rocketmq.tag:}")
 public class TransConsumer implements RocketMQListener {
+
+    @Override
     public ConsumeResult consume(MessageView messageView) {
         System.out.println("handle my transaction message:" + messageView);
+        String body =  StandardCharsets.UTF_8.decode(messageView.getBody().duplicate()).toString();
+        System.out.println("Sir，我正在消费消息：" + body);
         return ConsumeResult.SUCCESS;
     }
 }

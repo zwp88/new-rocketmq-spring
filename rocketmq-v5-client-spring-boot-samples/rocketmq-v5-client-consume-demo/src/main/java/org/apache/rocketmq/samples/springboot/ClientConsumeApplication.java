@@ -16,6 +16,7 @@
  */
 package org.apache.rocketmq.samples.springboot;
 
+import jakarta.annotation.Resource;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.message.MessageId;
 import org.apache.rocketmq.client.apis.message.MessageView;
@@ -26,8 +27,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import javax.annotation.Resource;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -52,17 +54,29 @@ public class ClientConsumeApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        receiveSimpleConsumerMessage();
-        receiveExtSimpleConsumerMessage();
-        //receiveSimpleConsumerMessageAsynchronously();
+
+       //receiveSimpleConsumerMessage();
+        new Thread(this::receiveSimpleConsumerMessageAsynchronously).start();
+//        new Thread(()->{
+//            try {
+//                receiveExtSimpleConsumerMessage();
+//            } catch (ClientException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).start();
+
+
+
     }
 
     public void receiveSimpleConsumerMessage() throws ClientException {
         do {
-            final List<MessageView> messages = rocketMQClientTemplate.receive(16, Duration.ofSeconds(15));
-            log.info("Received {} message(s)", messages.size());
+            final List<MessageView> messages = rocketMQClientTemplate.receive(15, Duration.ofSeconds(15));
+            log.info("Received1 {} message(s)", messages.size());
             for (MessageView message : messages) {
                 log.info("receive message, topic:" + message.getTopic() + " messageId:" + message.getMessageId());
+                String body =  StandardCharsets.UTF_8.decode(message.getBody().duplicate()).toString();
+                log.info("Sir，我正在消费消息：{}", body);
                 final MessageId messageId = message.getMessageId();
                 try {
                     rocketMQClientTemplate.ack(message);
@@ -77,12 +91,15 @@ public class ClientConsumeApplication implements CommandLineRunner {
     public void receiveExtSimpleConsumerMessage() throws ClientException {
         do {
             final List<MessageView> messages = extRocketMQTemplate.receive(16, Duration.ofSeconds(15));
-            log.info("Received {} message(s)", messages.size());
+            log.info("Received2 {} message(s)", messages.size());
+
             for (MessageView message : messages) {
                 log.info("receive message, topic:" + message.getTopic() + " messageId:" + message.getMessageId());
+                String body =  StandardCharsets.UTF_8.decode(message.getBody().duplicate()).toString();
+                log.info("Sir，我正在消费消息：{}", body);
                 final MessageId messageId = message.getMessageId();
                 try {
-                    rocketMQClientTemplate.ack(message);
+                    extRocketMQTemplate.ack(message);
                     log.info("Message is acknowledged successfully, messageId={}", messageId);
                 } catch (Throwable t) {
                     log.error("Message is failed to be acknowledged, messageId={}", messageId, t);
@@ -94,29 +111,43 @@ public class ClientConsumeApplication implements CommandLineRunner {
 
     public void receiveSimpleConsumerMessageAsynchronously() {
         do {
+
             int maxMessageNum = 16;
             // Set message invisible duration after it is received.
             Duration invisibleDuration = Duration.ofSeconds(15);
             // Set individual thread pool for receive callback.
-            ExecutorService receiveCallbackExecutor = Executors.newCachedThreadPool();
+            ExecutorService receiveCallbackExecutor = Executors.newSingleThreadExecutor();
             // Set individual thread pool for ack callback.
-            ExecutorService ackCallbackExecutor = Executors.newCachedThreadPool();
+            ExecutorService ackCallbackExecutor = Executors.newSingleThreadExecutor();
             CompletableFuture<List<MessageView>> future0;
             try {
-                future0 = rocketMQClientTemplate.receiveAsync(maxMessageNum, invisibleDuration);
+                future0 = extRocketMQTemplate.receiveAsync(maxMessageNum, invisibleDuration);
             } catch (ClientException | IOException e) {
                 throw new RuntimeException(e);
             }
             future0.whenCompleteAsync(((messages, throwable) -> {
                 if (null != throwable) {
                     log.error("Failed to receive message from remote", throwable);
+
                     // Return early.
                     return;
                 }
-                log.info("Received {} message(s)", messages.size());
+                log.info("Received3 {} message(s)", messages.size());
+                if(messages.size()==0){
+                    try {
+                        //获取消息频率慢一点 方便测试
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                messages.forEach(e->{
+                    String body =  StandardCharsets.UTF_8.decode(e.getBody().duplicate()).toString();
+                    log.info("Sir，我正在消费消息：{}", body);
+                });
                 // Using messageView as key rather than message id because message id may be duplicated.
                 final Map<MessageView, CompletableFuture<Void>> map =
-                        messages.stream().collect(Collectors.toMap(message -> message, rocketMQClientTemplate::ackAsync));
+                        messages.stream().collect(Collectors.toMap(message -> message, extRocketMQTemplate::ackAsync));
                 for (Map.Entry<MessageView, CompletableFuture<Void>> entry : map.entrySet()) {
                     final MessageId messageId = entry.getKey().getMessageId();
                     final CompletableFuture<Void> future = entry.getValue();
