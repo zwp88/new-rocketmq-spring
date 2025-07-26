@@ -30,9 +30,9 @@ This project aims to help developers quickly integrate [RocketMQ](http://rocketm
 
 ## Prerequisites
 
-- JDK 1.8 and above
+- JDK 17 and above
 - [Maven](http://maven.apache.org/) 3.0 and above
-- Spring Boot 2.0 and above
+- Spring Boot 3.0 and above
 
 ## Usage
 
