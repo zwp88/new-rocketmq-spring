@@ -45,6 +45,12 @@ Add a dependency using maven:
     <artifactId>rocketmq-spring-boot-starter</artifactId>
     <version>${RELEASE.VERSION}</version>
 </dependency>
+<dependency>
+    <groupId>org.apache.rocketmq</groupId>
+    <artifactId>rocketmq-v5-client-spring-boot-starter</artifactId>
+    <version>${RELEASE.VERSION}</version>
+</dependency>
+
 ```
 
 ## Samples
